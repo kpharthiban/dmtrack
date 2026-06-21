@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+*.env
+
+# SQLite database
+*.db
+*.db-journal
+
+# WhatsApp Bridge — Baileys session credentials (NEVER commit these)
+whatsapp-bridge/auth_info_baileys/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Build output
+dist/
+dist-ssr/
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.sw?

@@ -1,0 +1,165 @@
+@import "tailwindcss";
+
+:root {
+  --font-display: 'Outfit', system-ui, sans-serif;
+  --font-body: 'Outfit', system-ui, sans-serif;
+
+  --color-bg: #FAFAFA;
+  --color-surface: #FFFFFF;
+  --color-border: #E8E8E6;
+  --color-text-primary: #1A1A18;
+  --color-text-secondary: #6B6B67;
+  --color-text-muted: #A8A8A4;
+  --color-accent: #1A1A18;
+
+  /* Kanban column pastels */
+  --color-pending-bg: #FFF8EC;
+  --color-pending-border: #F0D9A8;
+  --color-pending-accent: #D97706;
+  --color-confirmed-bg: #EFF5FF;
+  --color-confirmed-border: #B8D4F5;
+  --color-confirmed-accent: #2563EB;
+  --color-delivered-bg: #F0FBF4;
+  --color-delivered-border: #A8D9B8;
+  --color-delivered-accent: #16A34A;
+
+  /* Payment badge states */
+  --color-unpaid-bg: #FEF2F2;
+  --color-unpaid-text: #DC2626;
+  --color-claimed-bg: #FFFBEB;
+  --color-claimed-text: #B45309;
+  --color-paid-bg: #F0FDF4;
+  --color-paid-text: #16A34A;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Large stat numbers — intentionally lighter so they don't shout */
+.display-heading {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+/* ── Hover effects ─────────────────────────────────────────────────────────── */
+
+/* Order card hover */
+.order-card {
+  transition: box-shadow 0.18s ease, transform 0.15s ease, border-color 0.18s ease;
+}
+.order-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  transform: translateY(-1px);
+  border-color: var(--color-border-hover, #C8C8C4) !important;
+}
+
+/* Generic pill button hover */
+.btn-pill {
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+.btn-pill:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+.btn-pill:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Move-to status buttons */
+.btn-move {
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+.btn-move:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+.btn-move:active {
+  transform: translateY(0);
+}
+
+/* Confirm payment button */
+.btn-verify {
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+.btn-verify:hover {
+  box-shadow: 0 3px 10px rgba(22,163,74,0.25);
+  transform: translateY(-1px);
+}
+.btn-verify:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Reject button */
+.btn-reject {
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+.btn-reject:hover {
+  box-shadow: 0 3px 10px rgba(220,38,38,0.18);
+  transform: translateY(-1px);
+}
+.btn-reject:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Paid badge revert hover */
+.btn-paid-revert {
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+.btn-paid-revert:hover {
+  background: #DCFCE7 !important;
+  box-shadow: 0 2px 8px rgba(22,163,74,0.18);
+}
+
+/* Tab nav buttons */
+.tab-btn {
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.tab-btn:hover:not(.tab-btn-active) {
+  background: rgba(0,0,0,0.04);
+}
+
+/* Stat card hover */
+.stat-card {
+  transition: box-shadow 0.18s ease, transform 0.15s ease;
+}
+.stat-card:hover {
+  box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+}
+
+/* Customer row hover */
+.customer-row {
+  transition: background 0.13s ease;
+}
+.customer-row:hover {
+  background: rgba(0,0,0,0.03);
+}
+
+/* Inline editable field hover — shows a subtle underline cue */
+.inline-field-row button:hover {
+  background: #EFF6FF !important;
+  outline: 1px dashed #93C5FD;
+}
+
+/* Remove number input spinner arrows */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] { -moz-appearance: textfield; }
