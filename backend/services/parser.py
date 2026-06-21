@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 from sqlalchemy.orm import Session
-from ..db.models import Customer, Order, Message
+from db.models import Customer, Order, Message
 
 # Statuses considered "active" — an existing order in these states will be
 # updated instead of creating a new card.

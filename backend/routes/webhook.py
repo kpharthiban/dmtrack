@@ -4,9 +4,9 @@ from sqlalchemy.orm import Session
 from typing import Literal, Optional
 import httpx
 import os
-from ..db.database import get_db
-from ..services.gemini import extract_orders_from_text, extract_orders_from_audio
-from ..services.parser import save_extracted_orders, save_message
+from db.database import get_db
+from services.gemini import extract_orders_from_text, extract_orders_from_audio
+from services.parser import save_extracted_orders, save_message
 
 router = APIRouter()
 

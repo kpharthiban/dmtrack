@@ -3,9 +3,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
-from .db.database import engine
-from .db import models
-from .routes import webhook, orders, customers
+from db.database import engine
+from db import models
+from routes import webhook, orders, customers
 
 models.Base.metadata.create_all(bind=engine)
 
