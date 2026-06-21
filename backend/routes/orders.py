@@ -38,9 +38,12 @@ def order_to_dict(o: Order) -> dict:
 def list_orders(
     status: Optional[str] = None,
     customer_id: Optional[int] = None,
+    session_id: Optional[str] = None,
     db: Session = Depends(get_db),
 ):
     query = db.query(Order)
+    if session_id:
+        query = query.filter(Order.session_id == session_id)
     if status:
         query = query.filter(Order.status == status)
     if customer_id:

@@ -18,12 +18,13 @@ class WebhookTextPayload(BaseModel):
     message: str
     media_type: Optional[str] = "text"
     source: Literal["whatsapp", "simulator"] = "whatsapp"
+    session_id: Optional[str] = None
 
 
 @router.post("/webhook")
 def receive_webhook(payload: WebhookTextPayload, db: Session = Depends(get_db)):
     """Receive a WhatsApp text message, extract orders, store everything."""
-    msg = save_message(db, raw_content=payload.message, media_type=payload.media_type, source=payload.source)
+    msg = save_message(db, raw_content=payload.message, media_type=payload.media_type, source=payload.source, session_id=payload.session_id)
 
     try:
         extracted = extract_orders_from_text(
@@ -33,7 +34,7 @@ def receive_webhook(payload: WebhookTextPayload, db: Session = Depends(get_db)):
         return {"status": "stored", "message_id": msg.id, "gemini_error": str(e)}
 
     saved = save_extracted_orders(
-        db, extracted, source_msg=payload.message[:500]
+        db, extracted, source_msg=payload.message[:500], session_id=payload.session_id
     )
     msg.processed = True
     db.commit()
@@ -72,6 +73,7 @@ def whatsapp_qr(session: Optional[str] = None):
 @router.post("/webhook/audio")
 async def receive_audio_webhook(
     sender: str = Form("Unknown"),
+    session_id: Optional[str] = Form(None),
     audio: UploadFile = File(...),
     db: Session = Depends(get_db),
 ):
@@ -83,6 +85,7 @@ async def receive_audio_webhook(
         db,
         raw_content=f"[Audio from {sender}: {audio.filename}]",
         media_type="audio",
+        session_id=session_id,
     )
 
     try:
@@ -90,7 +93,7 @@ async def receive_audio_webhook(
     except Exception as e:
         return {"status": "stored", "message_id": msg.id, "gemini_error": str(e)}
 
-    saved = save_extracted_orders(db, extracted, source_msg=f"audio:{audio.filename}")
+    saved = save_extracted_orders(db, extracted, source_msg=f"audio:{audio.filename}", session_id=session_id)
     msg.processed = True
     db.commit()
 

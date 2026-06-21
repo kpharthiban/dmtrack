@@ -7,21 +7,22 @@ from db.models import Customer, Order, Message
 ACTIVE_STATUSES = ("pending", "confirmed")
 
 
-def get_or_create_customer(db: Session, name: str, phone: str = None) -> Customer:
-    """Find existing customer by name (case-insensitive) or create new."""
-    customer = db.query(Customer).filter(
-        Customer.name.ilike(name.strip())
-    ).first()
+def get_or_create_customer(db: Session, name: str, session_id: str = None, phone: str = None) -> Customer:
+    """Find existing customer by name (case-insensitive) scoped to session, or create new."""
+    query = db.query(Customer).filter(Customer.name.ilike(name.strip()))
+    if session_id:
+        query = query.filter(Customer.session_id == session_id)
+    customer = query.first()
     if not customer:
         customer = Customer(
             name=name.strip(),
             phone=phone,
+            session_id=session_id,
             created_at=datetime.now(timezone.utc).isoformat(),
         )
         db.add(customer)
         db.flush()
     elif phone and not customer.phone:
-        # Back-fill phone if we now know it
         customer.phone = phone
     return customer
 
@@ -40,7 +41,7 @@ def _find_active_order(db: Session, customer_id: int) -> Order | None:
 
 
 def save_extracted_orders(
-    db: Session, extracted: list, source_msg: str = None
+    db: Session, extracted: list, source_msg: str = None, session_id: str = None
 ) -> list[Order]:
     """Upsert extracted orders.
 
@@ -59,7 +60,7 @@ def save_extracted_orders(
 
     for item in extracted:
         customer = get_or_create_customer(
-            db, item.get("customer_name", "Unknown")
+            db, item.get("customer_name", "Unknown"), session_id=session_id
         )
 
         existing = _find_active_order(db, customer.id)
@@ -98,10 +99,10 @@ def save_extracted_orders(
             # ── Create new card ───────────────────────────────────────────────
             new_paid = item.get("paid")
             order = Order(
+                session_id=session_id,
                 customer_id=customer.id,
                 item=item.get("item", ""),
                 amount=item.get("amount"),
-                # If Gemini says paid, set payment_claimed so staff can verify
                 payment_claimed=True if new_paid is True else False,
                 paid=False,
                 status="pending",
@@ -125,8 +126,10 @@ def save_message(
     media_type: str = "text",
     customer_id: int = None,
     source: str = "whatsapp",
+    session_id: str = None,
 ) -> Message:
     msg = Message(
+        session_id=session_id,
         customer_id=customer_id,
         raw_content=raw_content,
         media_type=media_type,

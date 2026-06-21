@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from typing import Optional
 from db.database import get_db
 from db.models import Customer, Order, Message
 
@@ -24,14 +25,19 @@ def customer_summary(c: Customer) -> dict:
 
 
 @router.get("/customers")
-def list_customers(db: Session = Depends(get_db)):
-    customers = db.query(Customer).all()
-    return [customer_summary(c) for c in customers]
+def list_customers(session_id: Optional[str] = None, db: Session = Depends(get_db)):
+    query = db.query(Customer)
+    if session_id:
+        query = query.filter(Customer.session_id == session_id)
+    return [customer_summary(c) for c in query.all()]
 
 
 @router.get("/customers/{customer_id}")
-def get_customer(customer_id: int, db: Session = Depends(get_db)):
-    c = db.query(Customer).filter(Customer.id == customer_id).first()
+def get_customer(customer_id: int, session_id: Optional[str] = None, db: Session = Depends(get_db)):
+    query = db.query(Customer).filter(Customer.id == customer_id)
+    if session_id:
+        query = query.filter(Customer.session_id == session_id)
+    c = query.first()
     if not c:
         raise HTTPException(status_code=404, detail="Customer not found")
     summary = customer_summary(c)
@@ -51,8 +57,11 @@ def get_customer(customer_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/messages")
-def list_messages(db: Session = Depends(get_db)):
-    msgs = db.query(Message).order_by(Message.created_at.desc()).limit(50).all()
+def list_messages(session_id: Optional[str] = None, db: Session = Depends(get_db)):
+    query = db.query(Message)
+    if session_id:
+        query = query.filter(Message.session_id == session_id)
+    msgs = query.order_by(Message.created_at.desc()).limit(50).all()
     return [
         {
             "id": m.id,

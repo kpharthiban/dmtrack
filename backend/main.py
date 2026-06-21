@@ -22,6 +22,9 @@ def _safe_add_column(conn, sql: str):
 with engine.connect() as conn:
     _safe_add_column(conn, "ALTER TABLE orders ADD COLUMN IF NOT EXISTS payment_claimed BOOLEAN DEFAULT 0")
     _safe_add_column(conn, "ALTER TABLE orders ADD COLUMN IF NOT EXISTS updated_at TEXT")
+    _safe_add_column(conn, "ALTER TABLE customers ADD COLUMN IF NOT EXISTS session_id TEXT")
+    _safe_add_column(conn, "ALTER TABLE orders ADD COLUMN IF NOT EXISTS session_id TEXT")
+    _safe_add_column(conn, "ALTER TABLE messages ADD COLUMN IF NOT EXISTS session_id TEXT")
 
 app = FastAPI(title="Invisible CRM API", version="1.0.0")
 

@@ -7,6 +7,7 @@ class Customer(Base):
     __tablename__ = "customers"
 
     id = Column(Integer, primary_key=True, index=True)
+    session_id = Column(Text, nullable=True, index=True)
     name = Column(Text, nullable=False)
     phone = Column(Text, nullable=True)
     created_at = Column(Text, nullable=False)
@@ -19,6 +20,7 @@ class Order(Base):
     __tablename__ = "orders"
 
     id = Column(Integer, primary_key=True, index=True)
+    session_id = Column(Text, nullable=True, index=True)
     customer_id = Column(Integer, ForeignKey("customers.id"), nullable=False)
     item = Column(Text, nullable=False)
     amount = Column(Float, nullable=True)
@@ -37,6 +39,7 @@ class Message(Base):
     __tablename__ = "messages"
 
     id = Column(Integer, primary_key=True, index=True)
+    session_id = Column(Text, nullable=True, index=True)
     customer_id = Column(Integer, ForeignKey("customers.id"), nullable=True)
     raw_content = Column(Text, nullable=False)
     media_type = Column(Text, default="text")  # text / audio / image

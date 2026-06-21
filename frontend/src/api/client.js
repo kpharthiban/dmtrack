@@ -5,11 +5,11 @@ const api = axios.create({
   timeout: 30000,
 })
 
-export const getOrders = (params = {}) => api.get('/orders', { params })
+export const getOrders = (params = {}) => api.get('/orders', { params: { session_id: getSessionId(), ...params } })
 export const updateOrder = (id, data) => api.patch(`/orders/${id}`, data)
-export const getCustomers = () => api.get('/customers')
-export const getCustomer = (id) => api.get(`/customers/${id}`)
-export const getMessages = () => api.get('/messages')
+export const getCustomers = () => api.get('/customers', { params: { session_id: getSessionId() } })
+export const getCustomer = (id) => api.get(`/customers/${id}`, { params: { session_id: getSessionId() } })
+export const getMessages = () => api.get('/messages', { params: { session_id: getSessionId() } })
 function getSessionId() {
   let id = localStorage.getItem('wa_session_id')
   if (!id) {
