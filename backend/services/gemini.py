@@ -52,11 +52,11 @@ def _get_client() -> genai.Client:
 
 
 def _clean_json(text: str) -> list:
-    """Strip markdown fences and parse JSON."""
-    text = text.strip()
-    text = re.sub(r"^```(?:json)?", "", text).strip()
-    text = re.sub(r"```$", "", text).strip()
-    return json.loads(text)
+    """Extract JSON array from Gemini response, robust to preamble/postamble text."""
+    match = re.search(r'\[.*\]', text.strip(), re.DOTALL)
+    if not match:
+        return []
+    return json.loads(match.group())
 
 
 def extract_orders_from_text(chat_text: str) -> list:

@@ -6,7 +6,7 @@ import time
 import httpx
 import os
 
-BASE_URL = os.getenv("API_URL", "http://localhost:8000")
+BASE_URL = os.getenv("API_URL", "https://dmtrack-production-16c0.up.railway.app")
 DELAY = 2  # seconds between messages
 
 MESSAGES = [

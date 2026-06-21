@@ -10,7 +10,16 @@ export const updateOrder = (id, data) => api.patch(`/orders/${id}`, data)
 export const getCustomers = () => api.get('/customers')
 export const getCustomer = (id) => api.get(`/customers/${id}`)
 export const getMessages = () => api.get('/messages')
-export const getWhatsappStatus = () => api.get('/whatsapp/status')
-export const getQrCode = () => api.get('/whatsapp/qr')  // now through FastAPI proxy
+function getSessionId() {
+  let id = localStorage.getItem('wa_session_id')
+  if (!id) {
+    id = crypto.randomUUID()
+    localStorage.setItem('wa_session_id', id)
+  }
+  return id
+}
+
+export const getWhatsappStatus = () => api.get('/whatsapp/status', { params: { session: getSessionId() } })
+export const getQrCode = () => api.get('/whatsapp/qr', { params: { session: getSessionId() } })
 
 export default api

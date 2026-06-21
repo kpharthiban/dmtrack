@@ -50,24 +50,20 @@ def receive_webhook(payload: WebhookTextPayload, db: Session = Depends(get_db)):
 
 
 @router.get("/whatsapp/status")
-def whatsapp_status():
-    """
-    Proxy to the Baileys bridge status endpoint.
-    Returns { connected: bool, phone: str|null }.
-    Returns { connected: false, error: str } if the bridge is not running.
-    """
+def whatsapp_status(session: Optional[str] = None):
     try:
-        resp = httpx.get(f"{BRIDGE_INTERNAL_URL}/status", timeout=3.0)
+        params = {"session": session} if session else {}
+        resp = httpx.get(f"{BRIDGE_INTERNAL_URL}/status", params=params, timeout=3.0)
         return resp.json()
     except Exception as e:
         return {"connected": False, "error": f"Bridge not running: {str(e)}"}
 
 
 @router.get("/whatsapp/qr")
-def whatsapp_qr():
-    """Proxy to the Baileys bridge /qr endpoint."""
+def whatsapp_qr(session: Optional[str] = None):
     try:
-        resp = httpx.get(f"{BRIDGE_INTERNAL_URL}/qr", timeout=5.0)
+        params = {"session": session} if session else {}
+        resp = httpx.get(f"{BRIDGE_INTERNAL_URL}/qr", params=params, timeout=5.0)
         return resp.json()
     except Exception as e:
         return {"connected": False, "qr": None, "error": f"Bridge not running: {str(e)}"}
